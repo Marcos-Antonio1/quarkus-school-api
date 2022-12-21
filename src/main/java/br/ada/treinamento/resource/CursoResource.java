@@ -1,5 +1,6 @@
 package br.ada.treinamento.resource;
 
+import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -11,47 +12,56 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import br.ada.treinamento.dto.CursoDto;
-import lombok.extern.slf4j.Slf4j;
+import br.ada.treinamento.service.CursoService;
 
-@Slf4j
+
+
 @Path("/cursos")
 @Produces(MediaType.APPLICATION_JSON)
 public class CursoResource {
     
+    private CursoService service;
+
+    @Inject
+    public CursoResource(CursoService service){
+        this.service = service;
+    }
+
     @GET
     public Response listaCursos(){
-      log.info("listando cursos");
       
-      return Response
-            .status(Response.Status.OK).build();  
+      return Response.status(Response.Status.OK)
+      .entity(this.service.retrieveAll())
+      .build();  
     }
 
     @GET
     @Path("/{id}")
     public Response listarCursoPorId(@PathParam("id") int id){
-        log.info("listando o curso {}", id);
 
-        return Response
-            .status(Response.Status.OK).build();  
+        return Response.status(Response.Status.OK)
+        .entity(this.service.getById(id))
+        .build();  
     }
 
     @POST
     public Response cadastrarCurso(CursoDto cursoDto){
-        log.info("Cadastrando curso {} ", cursoDto);
+        
+        this.service.save(cursoDto);
         return Response.status(Response.Status.CREATED).build();
     }
 
     @PUT
     @Path("/{id}")
     public Response atualizaCurso(CursoDto cursoDto, @PathParam("id") int id){
-        log.info("atualizando o curso de id {}", id);
+        this.service.alterar(id, cursoDto);
         return Response.status(Response.Status.OK).build();
     }
 
     @DELETE
     @Path("/{id}")
     public Response removeCurso(@PathParam("id") int id){
-        log.info("deletando o curso de id {}", id);
+        this.service.deletar(id);
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
