@@ -20,13 +20,13 @@ import br.ada.treinamento.service.ProfessorService;
 @Produces(MediaType.APPLICATION_JSON)
 public class ProfessorResource {
     
-    @Inject
+    
     private  ProfessorService service;
 
-    /* @Inject
+    @Inject
     public ProfessorResource(ProfessorService service){
         this.service = service;
-    } */
+    } 
     
     @GET
     public Response listaProfessores(){
