@@ -11,7 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import br.ada.treinamento.dto.ProfessorDto;
+import br.ada.treinamento.dto.ProfessorRequest;
 import br.ada.treinamento.service.ProfessorService;
 
 
@@ -47,18 +47,18 @@ public class ProfessorResource {
     }
 
     @POST
-    public Response cadastrarProfessor(ProfessorDto professorDto){
+    public Response cadastrarProfessor(ProfessorRequest professorRequest){
         
-        this.service.save(professorDto);
+        this.service.save(professorRequest);
         return Response.status(Response.Status.CREATED)
         .build();
     }
 
     @PUT
     @Path("/{id}")
-    public Response atualizaProfessor(ProfessorDto professorDto, @PathParam("id") int id){
+    public Response atualizaProfessor(ProfessorRequest professorRequest, @PathParam("id") int id){
         
-        this.service.alterar(id, professorDto);
+        this.service.alterar(id, professorRequest);
         return Response.status(Response.Status.OK)
         .build();
     }
