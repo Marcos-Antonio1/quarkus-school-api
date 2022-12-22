@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CursoDto {
+public class CursoRequest {
     
-    private int id;
     private String nome;
     private String descricao;
     private int duracao;
