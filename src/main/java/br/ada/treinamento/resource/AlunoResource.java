@@ -11,7 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import br.ada.treinamento.dto.AlunoDto;
+import br.ada.treinamento.dto.AlunoRequest;
 import br.ada.treinamento.service.AlunoService;
 
 @Path("/alunos")
@@ -43,18 +43,18 @@ public class AlunoResource {
     }
 
     @POST
-    public Response cadastrarAluno(AlunoDto alunoDto){
+    public Response cadastrarAluno(AlunoRequest alunoRequest){
 
-        this.service.save(alunoDto);
+        this.service.save(alunoRequest);
 
         return Response.status(Response.Status.CREATED).build();
     }
 
     @PUT
     @Path("/{id}")
-    public Response atualizaAluno(AlunoDto alunoDto, @PathParam("id") int id){
+    public Response atualizaAluno(AlunoRequest alunoRequest, @PathParam("id") int id){
         
-        this.service.alterar(id, alunoDto);
+        this.service.alterar(id, alunoRequest);
         return Response.status(Response.Status.OK).build();
     }
 
