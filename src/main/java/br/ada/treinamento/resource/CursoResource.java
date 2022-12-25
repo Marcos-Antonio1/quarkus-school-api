@@ -1,6 +1,7 @@
 package br.ada.treinamento.resource;
 
 import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -12,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import br.ada.treinamento.dto.CursoRequest;
+import br.ada.treinamento.dto.ErrorResponse;
 import br.ada.treinamento.service.CursoService;
 
 
@@ -45,16 +47,28 @@ public class CursoResource {
 
     @POST
     public Response cadastrarCurso(CursoRequest cursoRequest){
+        try{
+            this.service.save(cursoRequest);
+            return Response.status(Response.Status.CREATED).build();
+        }catch(ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST)
+            .entity(ErrorResponse.createFromValidation(e))
+            .build();
+        }
         
-        this.service.save(cursoRequest);
-        return Response.status(Response.Status.CREATED).build();
     }
 
     @PUT
     @Path("/{id}")
     public Response atualizaCurso(CursoRequest cursoRequest, @PathParam("id") int id){
-        this.service.alterar(id, cursoRequest);
-        return Response.status(Response.Status.OK).build();
+        try{
+            this.service.alterar(id, cursoRequest);
+            return Response.status(Response.Status.OK).build();
+        }catch(ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_GATEWAY)
+            .entity(ErrorResponse.createFromValidation(e))
+            .build();
+        }
     }
 
     @DELETE

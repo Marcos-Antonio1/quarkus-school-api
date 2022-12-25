@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import javax.ws.rs.NotFoundException;
 
 import br.ada.treinamento.dto.CursoRequest;
@@ -54,7 +55,7 @@ public class CursoService {
     }
 
     @Transactional
-    public void save(CursoRequest cursoRequest){
+    public void save(@Valid CursoRequest cursoRequest){
         log.info("Cadastrando Curso {} ", cursoRequest);
         
         Curso curso = Curso.builder().nome(cursoRequest.getNome())
@@ -64,7 +65,7 @@ public class CursoService {
     }
 
     @Transactional
-    public void alterar(int id, CursoRequest cursoRequest){
+    public void alterar(int id, @Valid CursoRequest cursoRequest){
         
         log.info("atualizando o Curso de id {}", id);
         Curso curso = buscaCursoPorId(id);
