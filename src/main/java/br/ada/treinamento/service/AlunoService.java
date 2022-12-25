@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import javax.ws.rs.NotFoundException;
 
 import br.ada.treinamento.dto.AlunoRequest;
@@ -60,7 +61,7 @@ public class AlunoService {
 
 
     @Transactional
-    public void save(AlunoRequest alunoRequest){
+    public void save(@Valid AlunoRequest alunoRequest){
         log.info("Cadastrando Aluno {} ", alunoRequest);
 
         Aluno aluno = Aluno.builder()
@@ -73,7 +74,7 @@ public class AlunoService {
     }
 
     @Transactional
-    public void alterar(int id, AlunoRequest alunoRequest){
+    public void alterar(int id,@Valid AlunoRequest alunoRequest){
 
         log.info("atualizando o Aluno de id {}", id);
         
