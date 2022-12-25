@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import javax.ws.rs.NotFoundException;
 
 import br.ada.treinamento.dto.DisciplinaRequest;
@@ -54,7 +55,7 @@ public class DisciplinaService {
     }
 
     @Transactional
-    public void save(DisciplinaRequest disciplinaRequest){
+    public void save(@Valid DisciplinaRequest disciplinaRequest){
         log.info("Cadastrando Aluno {} ", disciplinaRequest);
 
         Disciplina disciplina = Disciplina.builder()
@@ -65,7 +66,7 @@ public class DisciplinaService {
     }
 
     @Transactional
-    public void alterar(int id, DisciplinaRequest disciplinaRequest){
+    public void alterar(int id,@Valid DisciplinaRequest disciplinaRequest){
 
         log.info("atualizando Disciplina de id {}", id);
         
