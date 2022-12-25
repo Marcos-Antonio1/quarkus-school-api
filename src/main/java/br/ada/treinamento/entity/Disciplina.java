@@ -4,10 +4,13 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.PrePersist;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
@@ -36,6 +39,10 @@ public class Disciplina {
 
     @Column(name = "data_atualizacao",nullable = false)
     private LocalDateTime dateTime;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "titular")
+    private Professor titular;
 
     @PrePersist
     public void PrePersist(){
