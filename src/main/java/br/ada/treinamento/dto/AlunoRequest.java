@@ -15,10 +15,10 @@ import lombok.NoArgsConstructor;
 public class AlunoRequest {
     
     @NotBlank(message = "O nome não pode ser vazio")
-    @Min(value = 4, message="O nome tem que ter no mínimo 4 caracteres")
+    @Size(min = 4, message = "O nome tem que ter no mínimo 4 caracteres")
     private String nome;
     @NotBlank(message = "A Matricula não pode ser vazio")
-    @Min(value = 6, message="A Matricula tem que ter no mínimo 5 caracteres")
+    @Size(min = 6, message = "A Matricula tem que ter no mínimo 6 caracteres")
     private String matricula;
     private char sexo;
 }

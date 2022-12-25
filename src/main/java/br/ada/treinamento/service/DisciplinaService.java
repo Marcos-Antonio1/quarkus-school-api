@@ -1,6 +1,7 @@
 package br.ada.treinamento.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -12,7 +13,9 @@ import javax.ws.rs.NotFoundException;
 
 import br.ada.treinamento.dto.DisciplinaRequest;
 import br.ada.treinamento.dto.DisciplinaResponse;
+import br.ada.treinamento.dto.ProfessorResponse;
 import br.ada.treinamento.entity.Disciplina;
+import br.ada.treinamento.entity.Professor;
 import br.ada.treinamento.repository.DisciplinaRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,10 +24,12 @@ import lombok.extern.slf4j.Slf4j;
 public class DisciplinaService {
 
     private DisciplinaRepository repository;
+    private ProfessorService professorService;
     
     @Inject
-    public DisciplinaService(DisciplinaRepository repository){
+    public DisciplinaService(DisciplinaRepository repository, ProfessorService professorService){
         this.repository = repository;
+        this.professorService = professorService;
     }
 
     public List<DisciplinaResponse> retrieveAll(){
@@ -47,11 +52,22 @@ public class DisciplinaService {
             throw new NotFoundException();
         }
 
-        Disciplina discliplina = disclipinaBuscada.get();
+        Disciplina disciplina = disclipinaBuscada.get();
+        
+        if(Objects.isNull(disciplina.getTitular())){
+            return DisciplinaResponse.builder().id(disciplina.getId())
+            .nome(disciplina.getNome()).cargaHoraria(disciplina.getCargaHoraria())
+            .build();
+        }
 
-        return DisciplinaResponse.builder().id(discliplina.getId())
-        .nome(discliplina.getNome()).cargaHoraria(discliplina.getCargaHoraria()).build();
-
+        ProfessorResponse professorTitular = ProfessorResponse.builder().
+        id(disciplina.getTitular().getId()).nome(disciplina.getTitular().getNome())
+        .titulo(disciplina.getTitular().getTitulo()).sexo(disciplina.getTitular().getSexo()).build();
+        
+        return DisciplinaResponse.builder().id(disciplina.getId())
+        .nome(disciplina.getNome()).cargaHoraria(disciplina.getCargaHoraria())
+        .professorTitular(professorTitular)
+        .build();
     }
 
     @Transactional
@@ -86,5 +102,23 @@ public class DisciplinaService {
     public void deletar(int id){
         log.info("deletando disciplina de id {}", id);
         repository.deleteById(id);
+    }
+    
+    @Transactional
+    public void cadastrarProfessorAMateria(int idDisciplina,int idProfessor){
+        Optional<Disciplina> disciplinaBuscado = repository.findByIdOptional(idDisciplina);
+
+        if(!disciplinaBuscado.isPresent()){
+            throw new NotFoundException();
+        }
+
+        Disciplina disciplina = disciplinaBuscado.get();
+
+        Professor professor = professorService.buscaProfessorPorId(idProfessor);
+
+        disciplina.setTitular(professor);
+
+        repository.persist(disciplina);
+
     }
 }

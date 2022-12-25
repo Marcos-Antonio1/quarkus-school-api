@@ -9,10 +9,13 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.NotFoundException;
 
+import br.ada.treinamento.dto.DisciplinaResponse;
 import br.ada.treinamento.dto.ProfessorRequest;
 import br.ada.treinamento.dto.ProfessorResponse;
 import br.ada.treinamento.entity.Curso;
+import br.ada.treinamento.entity.Disciplina;
 import br.ada.treinamento.entity.Professor;
+import br.ada.treinamento.repository.DisciplinaRepository;
 import br.ada.treinamento.repository.ProfessorRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ProfessorService {
 
     private ProfessorRepository repository;
+    private DisciplinaRepository disciplinaRepository;
     
     @Inject
     public ProfessorService(ProfessorRepository repository){
@@ -84,7 +88,15 @@ public class ProfessorService {
         repository.deleteById(id);
     }
 
-    private Professor buscaProfessorPorId(int id){
+    public DisciplinaResponse listarDisciplinaNaQualETitular(int id){
+        Professor professor = buscaProfessorPorId(id);
+        Disciplina disciplinaEntitie = professor.getDisciplina();
+        
+        return DisciplinaResponse.builder().id(disciplinaEntitie.getId())
+        .nome(disciplinaEntitie.getNome()).cargaHoraria(disciplinaEntitie.getCargaHoraria()).build();
+    }
+
+    public Professor buscaProfessorPorId(int id){
         Optional<Professor> professorBuscado = repository.findByIdOptional(id);
         
         if(!professorBuscado.isPresent()){

@@ -2,6 +2,7 @@ package br.ada.treinamento.dto;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 public class ProfessorRequest {
     
     @NotBlank(message = "O nome não pode ser vazio")
-    @Min(value = 4, message="O nome tem que ter no mínimo 4 caracteres")
+    @Size(min = 4, message = "O nome tem que ter no mínimo 4 caracteres")
     private String nome;
     @NotBlank(message = "O titulo não pode ser vazio")
     private String titulo;

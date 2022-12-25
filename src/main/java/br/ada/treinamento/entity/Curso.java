@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,7 +31,7 @@ public class Curso {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     @NotBlank(message = "O nome não pode ser vazio")
-    @Min(value = 4, message="O nome tem que ter no mínimo 4 caracteres")
+    @Size(min = 4, message = "O nome tem que ter no mínimo 4 caracteres")
     private String nome;
     @NotBlank(message = "A Descrição não pode ser vazio")
     private String descricao;

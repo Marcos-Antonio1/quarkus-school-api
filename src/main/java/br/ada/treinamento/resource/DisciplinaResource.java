@@ -15,12 +15,12 @@ import br.ada.treinamento.dto.ErrorResponse;
 import br.ada.treinamento.service.DisciplinaService;
 
 @Path("/discliplinas")
-public class DiscliplinaResource {
+public class DisciplinaResource {
 
     private DisciplinaService service;
 
     @Inject
-    public DiscliplinaResource(DisciplinaService service){
+    public DisciplinaResource(DisciplinaService service){
         this.service = service;
     }
     
@@ -72,5 +72,14 @@ public class DiscliplinaResource {
     public Response removeCurso(@PathParam("id") int id){
         this.service.deletar(id);
         return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+    @PUT
+    @Path("/{id-disciplina}/titular/{id-professor}")
+    public Response cadastrarProfessorMateria(@PathParam("id-disciplina") int idDisciplina,
+    @PathParam("id-professor")int idProfessor){
+        this.service.cadastrarProfessorAMateria(idDisciplina, idProfessor);
+        return Response.status(Response.Status.OK).build();
+
     }
 }

@@ -1,5 +1,8 @@
 package br.ada.treinamento.resource;
 
+import java.util.List;
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.DELETE;
@@ -12,8 +15,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import br.ada.treinamento.dto.DisciplinaResponse;
 import br.ada.treinamento.dto.ErrorResponse;
 import br.ada.treinamento.dto.ProfessorRequest;
+import br.ada.treinamento.entity.Disciplina;
 import br.ada.treinamento.service.ProfessorService;
 
 
@@ -82,5 +87,12 @@ public class ProfessorResource {
         this.service.deletar(id);
         return Response.status(Response.Status.NO_CONTENT).build();
     }
+
+    @GET
+    @Path("/{id-professor}/disciplina")
+    public Response listarDisciplinaNaQualETitular(@PathParam("id-professor") int id){
+        return Response.status(Response.Status.OK).entity(service.listarDisciplinaNaQualETitular(id)).build();
+    }
+
 
 }
