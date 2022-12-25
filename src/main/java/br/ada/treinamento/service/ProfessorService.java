@@ -10,8 +10,8 @@ import javax.ws.rs.NotFoundException;
 
 import br.ada.treinamento.dto.ProfessorRequest;
 import br.ada.treinamento.dto.ProfessorResponse;
-import br.ada.treinamento.entity.CursoEntity;
-import br.ada.treinamento.entity.ProfessorEntity;
+import br.ada.treinamento.entity.Curso;
+import br.ada.treinamento.entity.Professor;
 import br.ada.treinamento.repository.ProfessorRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,7 +30,7 @@ public class ProfessorService {
     public List<ProfessorResponse> retrieveAll(){
 
         log.info("listando professores");
-        List<ProfessorEntity> professorEntitie = repository.listAll();
+        List<Professor> professorEntitie = repository.listAll();
 
         return professorEntitie.stream().map(professor -> ProfessorResponse.builder()
         .id(professor.getId()).nome(professor.getNome()).titulo(professor.getTitulo()).sexo(professor.getSexo())
@@ -42,7 +42,7 @@ public class ProfessorService {
     public ProfessorResponse getById(int id){
         
         log.info("listando o professor {}", id);
-        ProfessorEntity professor = buscaProfessorPorId(id);
+        Professor professor = buscaProfessorPorId(id);
 
         return ProfessorResponse.builder()
         .id(professor.getId()).nome(professor.getNome()).titulo(professor.getTitulo()).sexo(professor.getSexo())
@@ -55,7 +55,7 @@ public class ProfessorService {
     public void save(ProfessorRequest professorRequest){
         
         log.info("Cadastrando professor {} ", professorRequest);
-        ProfessorEntity professor = ProfessorEntity.builder().nome(professorRequest.getNome())
+        Professor professor = Professor.builder().nome(professorRequest.getNome())
         .titulo(professorRequest.getTitulo())
         .sexo(professorRequest.getSexo())
         .build();
@@ -68,7 +68,7 @@ public class ProfessorService {
     public void alterar(int id, ProfessorRequest professorRequest){
         
         log.info("atualizando o professor de id {}", id);
-        ProfessorEntity professor = buscaProfessorPorId(id);
+        Professor professor = buscaProfessorPorId(id);
 
         professor.setNome(professorRequest.getNome());
         professor.setTitulo(professorRequest.getTitulo());
@@ -83,8 +83,8 @@ public class ProfessorService {
         repository.deleteById(id);
     }
 
-    private ProfessorEntity buscaProfessorPorId(int id){
-        Optional<ProfessorEntity> professorBuscado = repository.findByIdOptional(id);
+    private Professor buscaProfessorPorId(int id){
+        Optional<Professor> professorBuscado = repository.findByIdOptional(id);
         
         if(!professorBuscado.isPresent()){
             throw new NotFoundException();

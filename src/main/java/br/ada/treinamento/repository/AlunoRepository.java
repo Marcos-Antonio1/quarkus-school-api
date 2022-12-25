@@ -1,10 +1,10 @@
 package br.ada.treinamento.repository;
 
 import javax.enterprise.context.ApplicationScoped;
-import br.ada.treinamento.entity.AlunoEntity;
+import br.ada.treinamento.entity.Aluno;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
 @ApplicationScoped
-public class AlunoRepository implements PanacheRepositoryBase<AlunoEntity,Integer> {
+public class AlunoRepository implements PanacheRepositoryBase<Aluno,Integer> {
     
 }

@@ -11,7 +11,7 @@ import javax.ws.rs.NotFoundException;
 
 import br.ada.treinamento.dto.AlunoRequest;
 import br.ada.treinamento.dto.AlunoResponse;
-import br.ada.treinamento.entity.AlunoEntity;
+import br.ada.treinamento.entity.Aluno;
 import br.ada.treinamento.repository.AlunoRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,7 +29,7 @@ public class AlunoService {
     public List<AlunoResponse> retrieveAll(){
         log.info("listando alunos");
 
-        List<AlunoEntity> alunosEntitie = repository.listAll();
+        List<Aluno> alunosEntitie = repository.listAll();
         
         return alunosEntitie.stream().map(aluno -> 
             AlunoResponse.builder().id(aluno.getId())
@@ -43,13 +43,13 @@ public class AlunoService {
     public AlunoResponse getById(int id){
         log.info("listando o Aluno {}", id);
 
-        Optional<AlunoEntity> alunoBuscado = repository.findByIdOptional(id);
+        Optional<Aluno> alunoBuscado = repository.findByIdOptional(id);
 
         if(!alunoBuscado.isPresent()){
             throw new NotFoundException();
         }
 
-        AlunoEntity aluno = alunoBuscado.get();
+        Aluno aluno = alunoBuscado.get();
 
         return AlunoResponse.builder().id(aluno.getId())
         .matricula(aluno.getMatricula())
@@ -63,7 +63,7 @@ public class AlunoService {
     public void save(AlunoRequest alunoRequest){
         log.info("Cadastrando Aluno {} ", alunoRequest);
 
-        AlunoEntity aluno = AlunoEntity.builder()
+        Aluno aluno = Aluno.builder()
             .nome(alunoRequest.getNome())
             .matricula(alunoRequest.getMatricula())
             .sexo(alunoRequest.getSexo())
@@ -77,13 +77,13 @@ public class AlunoService {
 
         log.info("atualizando o Aluno de id {}", id);
         
-        Optional<AlunoEntity> alunoBuscado = repository.findByIdOptional(id);
+        Optional<Aluno> alunoBuscado = repository.findByIdOptional(id);
 
         if(!alunoBuscado.isPresent()){
             throw new NotFoundException();
         }
 
-        AlunoEntity aluno = alunoBuscado.get();
+        Aluno aluno = alunoBuscado.get();
         aluno.setNome(alunoRequest.getNome());
         repository.persist(aluno);
     }

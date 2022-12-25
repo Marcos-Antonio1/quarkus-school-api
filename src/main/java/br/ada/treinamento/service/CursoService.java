@@ -11,7 +11,7 @@ import javax.ws.rs.NotFoundException;
 
 import br.ada.treinamento.dto.CursoRequest;
 import br.ada.treinamento.dto.CursoResponse;
-import br.ada.treinamento.entity.CursoEntity;
+import br.ada.treinamento.entity.Curso;
 import br.ada.treinamento.repository.CursoRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,7 +30,7 @@ public class CursoService {
     public List<CursoResponse> retrieveAll(){
 
         log.info("listando Cursos");
-        List<CursoEntity> cursosEntitie = repository.listAll();
+        List<Curso> cursosEntitie = repository.listAll();
         
         return cursosEntitie.stream().map(cursos -> 
          CursoResponse.builder().id(cursos.getId()).nome(cursos.getNome())
@@ -44,7 +44,7 @@ public class CursoService {
         
         log.info("listando o Curso {}", id);
 
-        CursoEntity curso = buscaCursoPorId(id);
+        Curso curso = buscaCursoPorId(id);
 
         return CursoResponse.builder().id(curso.getId())
         .nome(curso.getNome()).descricao(curso.getDescricao())
@@ -57,7 +57,7 @@ public class CursoService {
     public void save(CursoRequest cursoRequest){
         log.info("Cadastrando Curso {} ", cursoRequest);
         
-        CursoEntity curso = CursoEntity.builder().nome(cursoRequest.getNome())
+        Curso curso = Curso.builder().nome(cursoRequest.getNome())
         .descricao(cursoRequest.getDescricao()).duracao(cursoRequest.getDuracao()).build();
 
         repository.persist(curso);
@@ -67,7 +67,7 @@ public class CursoService {
     public void alterar(int id, CursoRequest cursoRequest){
         
         log.info("atualizando o Curso de id {}", id);
-        CursoEntity curso = buscaCursoPorId(id);
+        Curso curso = buscaCursoPorId(id);
         curso.setDescricao(cursoRequest.getDescricao());
         curso.setNome(cursoRequest.getNome());
         curso.setDuracao(cursoRequest.getDuracao());
@@ -85,8 +85,8 @@ public class CursoService {
 
     }
 
-    private CursoEntity buscaCursoPorId(int id){
-        Optional<CursoEntity> cursoBuscado = repository.findByIdOptional(id);
+    private Curso buscaCursoPorId(int id){
+        Optional<Curso> cursoBuscado = repository.findByIdOptional(id);
         
         if(!cursoBuscado.isPresent()){
             throw new NotFoundException();

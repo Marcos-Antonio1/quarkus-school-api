@@ -1,8 +1,5 @@
 package br.ada.treinamento.entity;
 
-import java.io.Serializable;
-
-import javax.annotation.Generated;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,22 +11,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+@Entity
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Table(name = "Professor")
-public class ProfessorEntity  implements Serializable {
+public class Disciplina {
     
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    private String nome;
-    private String titulo;
-    private Character sexo;
 
+    private String nome;
+    private int cargaHoraria;
 
 }
