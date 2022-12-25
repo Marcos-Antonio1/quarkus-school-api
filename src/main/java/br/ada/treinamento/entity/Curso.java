@@ -1,8 +1,12 @@
 package br.ada.treinamento.entity;
 
+import java.time.LocalDateTime;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.PrePersist;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
@@ -32,5 +36,14 @@ public class Curso {
     private String descricao;
     @Positive(message = "A duração tem que ser um valor maior que 0")
     private int duracao;
+
+    @Column(name = "data_atualizacao",nullable = false)
+    private LocalDateTime dateTime;
+
+    @PrePersist
+    public void PrePersist(){
+        setDateTime(LocalDateTime.now());
+    }
+
 
 }

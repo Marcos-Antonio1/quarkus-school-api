@@ -1,7 +1,11 @@
 package br.ada.treinamento.entity;
 
+import java.time.LocalDateTime;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.PrePersist;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -29,5 +33,13 @@ public class Disciplina {
     private String nome;
     @Positive(message = "a carga horaria tem que ser um valor maior que 0")
     private int cargaHoraria;
+
+    @Column(name = "data_atualizacao",nullable = false)
+    private LocalDateTime dateTime;
+
+    @PrePersist
+    public void PrePersist(){
+        setDateTime(LocalDateTime.now());
+    }
 
 }

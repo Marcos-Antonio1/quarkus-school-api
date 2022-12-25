@@ -1,8 +1,10 @@
 package br.ada.treinamento.entity;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
-import javax.annotation.Generated;
+import javax.persistence.Column;
+import javax.persistence.PrePersist;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -35,6 +37,14 @@ public class Professor  implements Serializable {
     @NotBlank(message = "O titulo não pode ser vazio")
     private String titulo;
     private Character sexo;
+
+    @Column(name = "data_atualizacao",nullable = false)
+    private LocalDateTime dateTime;
+
+    @PrePersist
+    public void PrePersist(){
+        setDateTime(LocalDateTime.now());
+    }
 
 
 }

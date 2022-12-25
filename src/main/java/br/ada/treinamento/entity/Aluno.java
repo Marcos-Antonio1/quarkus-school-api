@@ -1,10 +1,13 @@
 package br.ada.treinamento.entity;
 
+import java.time.LocalDateTime;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedNativeQuery;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -33,6 +36,14 @@ public class Aluno {
     @Min(value = 6, message="A Matricula tem que ter no mínimo 5 caracteres")
     private String matricula;
     private Character sexo;
+
+    @Column(name = "data_atualizacao",nullable = false)
+    private LocalDateTime dateTime;
+
+    @PrePersist
+    public void PrePersist(){
+        setDateTime(LocalDateTime.now());
+    }
 
 
 }
