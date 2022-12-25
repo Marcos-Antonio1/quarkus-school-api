@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import javax.ws.rs.NotFoundException;
 
 import br.ada.treinamento.dto.ProfessorRequest;
@@ -52,7 +53,7 @@ public class ProfessorService {
     }
 
     @Transactional
-    public void save(ProfessorRequest professorRequest){
+    public void save(@Valid ProfessorRequest professorRequest){
         
         log.info("Cadastrando professor {} ", professorRequest);
         Professor professor = Professor.builder().nome(professorRequest.getNome())
@@ -65,7 +66,7 @@ public class ProfessorService {
     }
 
     @Transactional
-    public void alterar(int id, ProfessorRequest professorRequest){
+    public void alterar(int id,@Valid ProfessorRequest professorRequest){
         
         log.info("atualizando o professor de id {}", id);
         Professor professor = buscaProfessorPorId(id);

@@ -1,6 +1,7 @@
 package br.ada.treinamento.resource;
 
 import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -11,6 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import br.ada.treinamento.dto.ErrorResponse;
 import br.ada.treinamento.dto.ProfessorRequest;
 import br.ada.treinamento.service.ProfessorService;
 
@@ -48,19 +50,30 @@ public class ProfessorResource {
 
     @POST
     public Response cadastrarProfessor(ProfessorRequest professorRequest){
-        
-        this.service.save(professorRequest);
-        return Response.status(Response.Status.CREATED)
-        .build();
+        try{
+            this.service.save(professorRequest);
+            return Response.status(Response.Status.CREATED)
+            .build();
+        }catch(ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST)
+            .entity(ErrorResponse.createFromValidation(e))
+            .build();
+        }
     }
 
     @PUT
     @Path("/{id}")
     public Response atualizaProfessor(ProfessorRequest professorRequest, @PathParam("id") int id){
+        try{
+            this.service.alterar(id, professorRequest);
+            return Response.status(Response.Status.OK)
+            .build();
+        }catch(ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST)
+            .entity(ErrorResponse.createFromValidation(e))
+            .build();
+        }
         
-        this.service.alterar(id, professorRequest);
-        return Response.status(Response.Status.OK)
-        .build();
     }
 
     @DELETE
