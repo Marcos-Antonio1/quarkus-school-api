@@ -1,6 +1,7 @@
 package br.ada.treinamento.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -12,7 +13,9 @@ import javax.ws.rs.NotFoundException;
 
 import br.ada.treinamento.dto.AlunoRequest;
 import br.ada.treinamento.dto.AlunoResponse;
+import br.ada.treinamento.dto.ProfessorResponse;
 import br.ada.treinamento.entity.Aluno;
+import br.ada.treinamento.entity.Professor;
 import br.ada.treinamento.repository.AlunoRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,10 +24,12 @@ import lombok.extern.slf4j.Slf4j;
 public class AlunoService {
 
     private AlunoRepository repository;
+    private ProfessorService professorService;
 
     @Inject
-    public AlunoService(AlunoRepository repository){
+    public AlunoService(AlunoRepository repository, ProfessorService professorService){
         this.repository = repository;
+        this.professorService = professorService;
     }
     
     public List<AlunoResponse> retrieveAll(){
@@ -52,10 +57,24 @@ public class AlunoService {
 
         Aluno aluno = alunoBuscado.get();
 
+        if(Objects.isNull(aluno.getTutor())){
+            return AlunoResponse.builder().id(aluno.getId())
+            .matricula(aluno.getMatricula())
+            .nome(aluno.getNome())
+            .sexo(aluno.getSexo()).build();
+        }
+
+        ProfessorResponse professorResponse = ProfessorResponse.builder()
+        .id(aluno.getTutor().getId()).nome(aluno.getTutor().getNome())
+        .titulo(aluno.getTutor().getTitulo()).sexo(aluno.getTutor().getSexo()).build();
+
         return AlunoResponse.builder().id(aluno.getId())
         .matricula(aluno.getMatricula())
         .nome(aluno.getNome())
+        .tutor(professorResponse)
         .sexo(aluno.getSexo()).build();
+
+        
         
     }
 
@@ -93,6 +112,21 @@ public class AlunoService {
     public void deletar(int id){
         log.info("deletando o Aluno de id {}", id);
         repository.deleteById(id);
+    }
+
+    @Transactional
+    public void cadastrarTutorParaAluno(int idAluno,int idTutor){
+        Optional<Aluno> alunoBuscado = repository.findByIdOptional(idAluno);
+
+        if(!alunoBuscado.isPresent()){
+            throw new NotFoundException();
+        }
+
+        Aluno aluno = alunoBuscado.get();
+        Professor professor = professorService.buscaProfessorPorId(idTutor);
+
+        aluno.setTutor(professor);
+        repository.persist(aluno);
     }
     
 }

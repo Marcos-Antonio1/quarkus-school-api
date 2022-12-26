@@ -16,5 +16,6 @@ public class AlunoResponse {
     private String nome;
     private String matricula;
     private char sexo;
+    private ProfessorResponse tutor;
     
 }

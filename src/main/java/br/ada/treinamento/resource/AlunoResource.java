@@ -81,4 +81,11 @@ public class AlunoResource {
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
+    @PUT
+    @Path("/{id-aluno}/tutor/{id-tutor}")
+    public Response cadastrarTutorParaAluno(@PathParam("id-aluno")int idAluno,@PathParam("id-tutor") int idTutor){
+        this.service.cadastrarTutorParaAluno(idAluno, idTutor);
+        return Response.status(Response.Status.OK).build();
+    }
+
 }

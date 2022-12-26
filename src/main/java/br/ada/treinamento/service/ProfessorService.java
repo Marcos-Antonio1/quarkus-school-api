@@ -9,9 +9,11 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.NotFoundException;
 
+import br.ada.treinamento.dto.AlunoResponse;
 import br.ada.treinamento.dto.DisciplinaResponse;
 import br.ada.treinamento.dto.ProfessorRequest;
 import br.ada.treinamento.dto.ProfessorResponse;
+import br.ada.treinamento.entity.Aluno;
 import br.ada.treinamento.entity.Curso;
 import br.ada.treinamento.entity.Disciplina;
 import br.ada.treinamento.entity.Professor;
@@ -96,6 +98,19 @@ public class ProfessorService {
         .nome(disciplinaEntitie.getNome()).cargaHoraria(disciplinaEntitie.getCargaHoraria()).build();
     }
 
+    public List<AlunoResponse> listarAlunosTutorados(int idProfessor){
+        Professor professor = buscaProfessorPorId(idProfessor);
+
+        List<Aluno> alunosEntities = professor.getAlunos();
+
+        return alunosEntities.stream().map(
+            alu -> 
+              AlunoResponse.builder().id(alu.getId())
+              .nome(alu.getNome()).matricula(alu.getMatricula())
+              .sexo(alu.getSexo()).build()
+        ).collect(Collectors.toList());
+    }
+
     public Professor buscaProfessorPorId(int id){
         Optional<Professor> professorBuscado = repository.findByIdOptional(id);
         
@@ -106,5 +121,6 @@ public class ProfessorService {
         return professorBuscado.get();
 
     }
+    
 
 }

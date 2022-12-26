@@ -15,10 +15,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import br.ada.treinamento.dto.DisciplinaResponse;
+import br.ada.treinamento.dto.AlunoResponse;
 import br.ada.treinamento.dto.ErrorResponse;
 import br.ada.treinamento.dto.ProfessorRequest;
-import br.ada.treinamento.entity.Disciplina;
 import br.ada.treinamento.service.ProfessorService;
 
 
@@ -92,6 +91,12 @@ public class ProfessorResource {
     @Path("/{id-professor}/disciplina")
     public Response listarDisciplinaNaQualETitular(@PathParam("id-professor") int id){
         return Response.status(Response.Status.OK).entity(service.listarDisciplinaNaQualETitular(id)).build();
+    }
+
+    @GET
+    @Path("/{id-professor}/tutorados")
+    public Response listarAlunosTutorados(@PathParam("id-professor") int idProfessor){
+        return Response.status(Response.Status.OK).entity(service.listarAlunosTutorados(idProfessor)).build();
     }
 
 
