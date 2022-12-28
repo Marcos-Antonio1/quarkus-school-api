@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.NotFoundException;
 
+import br.ada.treinamento.Mapper.CursoMapper;
 import br.ada.treinamento.dto.CursoRequest;
 import br.ada.treinamento.dto.CursoResponse;
 import br.ada.treinamento.entity.Curso;
@@ -22,10 +23,12 @@ import lombok.extern.slf4j.Slf4j;
 public class CursoService {
     
     private CursoRepository repository;
+    private CursoMapper mapper;
 
     @Inject
-    public CursoService(CursoRepository repository){
+    public CursoService(CursoRepository repository ,CursoMapper mapper){
         this.repository =  repository;
+        this.mapper = mapper;
     }
 
     public List<CursoResponse> retrieveAll(){
@@ -33,11 +36,7 @@ public class CursoService {
         log.info("listando Cursos");
         List<Curso> cursosEntitie = repository.listAll();
         
-        return cursosEntitie.stream().map(cursos -> 
-         CursoResponse.builder().id(cursos.getId()).nome(cursos.getNome())
-         .descricao(cursos.getDescricao())
-         .duracao(cursos.getDuracao()).build()
-        ).collect(Collectors.toList());
+        return mapper.toResponse(cursosEntitie);
          
     }
 
@@ -47,9 +46,7 @@ public class CursoService {
 
         Curso curso = buscaCursoPorId(id);
 
-        return CursoResponse.builder().id(curso.getId())
-        .nome(curso.getNome()).descricao(curso.getDescricao())
-        .duracao(curso.getDuracao()).build();
+        return mapper.toResponse(curso);
 
 
     }

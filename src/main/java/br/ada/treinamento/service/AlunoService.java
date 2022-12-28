@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.NotFoundException;
 
+import br.ada.treinamento.Mapper.AlunoMapper;
 import br.ada.treinamento.dto.AlunoRequest;
 import br.ada.treinamento.dto.AlunoResponse;
 import br.ada.treinamento.dto.ProfessorResponse;
@@ -25,11 +26,16 @@ public class AlunoService {
 
     private AlunoRepository repository;
     private ProfessorService professorService;
+    private AlunoMapper mapper;
 
     @Inject
-    public AlunoService(AlunoRepository repository, ProfessorService professorService){
+    public AlunoService(AlunoRepository repository, 
+    ProfessorService professorService,
+    AlunoMapper mapper
+    ){
         this.repository = repository;
         this.professorService = professorService;
+        this.mapper = mapper;
     }
     
     public List<AlunoResponse> retrieveAll(){
@@ -37,13 +43,7 @@ public class AlunoService {
 
         List<Aluno> alunosEntitie = repository.listAll();
         
-        return alunosEntitie.stream().map(aluno -> 
-            AlunoResponse.builder().id(aluno.getId())
-            .nome(aluno.getNome())
-            .matricula(aluno.getMatricula())
-            .sexo(aluno.getSexo()).build()
-        ).collect(Collectors.toList());
-
+        return mapper.toResponse(alunosEntitie);
     }
 
     public AlunoResponse getById(int id){
@@ -57,25 +57,8 @@ public class AlunoService {
 
         Aluno aluno = alunoBuscado.get();
 
-        if(Objects.isNull(aluno.getTutor())){
-            return AlunoResponse.builder().id(aluno.getId())
-            .matricula(aluno.getMatricula())
-            .nome(aluno.getNome())
-            .sexo(aluno.getSexo()).build();
-        }
+        return mapper.toResponse(aluno);
 
-        ProfessorResponse professorResponse = ProfessorResponse.builder()
-        .id(aluno.getTutor().getId()).nome(aluno.getTutor().getNome())
-        .titulo(aluno.getTutor().getTitulo()).sexo(aluno.getTutor().getSexo()).build();
-
-        return AlunoResponse.builder().id(aluno.getId())
-        .matricula(aluno.getMatricula())
-        .nome(aluno.getNome())
-        .tutor(professorResponse)
-        .sexo(aluno.getSexo()).build();
-
-        
-        
     }
 
 

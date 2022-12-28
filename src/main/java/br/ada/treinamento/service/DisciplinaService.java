@@ -3,7 +3,6 @@ package br.ada.treinamento.service;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -11,11 +10,12 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.NotFoundException;
 
+import br.ada.treinamento.Mapper.DisciplinaMapper;
 import br.ada.treinamento.dto.DisciplinaRequest;
 import br.ada.treinamento.dto.DisciplinaResponse;
-import br.ada.treinamento.dto.ProfessorResponse;
 import br.ada.treinamento.entity.Disciplina;
 import br.ada.treinamento.entity.Professor;
+import br.ada.treinamento.exception.InvalidStateException;
 import br.ada.treinamento.repository.DisciplinaRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,20 +25,23 @@ public class DisciplinaService {
 
     private DisciplinaRepository repository;
     private ProfessorService professorService;
+    private DisciplinaMapper mapper;
     
     @Inject
-    public DisciplinaService(DisciplinaRepository repository, ProfessorService professorService){
+    public DisciplinaService(DisciplinaRepository repository, 
+    ProfessorService professorService,
+    DisciplinaMapper mapper
+    ){
         this.repository = repository;
         this.professorService = professorService;
+        this.mapper = mapper;
     }
 
     public List<DisciplinaResponse> retrieveAll(){
         log.info("listando disciplinas");
         List<Disciplina> disciplinasEntitie  = repository.listAll();
 
-        return disciplinasEntitie.stream()
-        .map(dis -> DisciplinaResponse.builder().id(dis.getId())
-        .nome(dis.getNome()).cargaHoraria(dis.getCargaHoraria()).build()).collect(Collectors.toList());
+        return mapper.toResponse(disciplinasEntitie);
         
     }
 
@@ -54,20 +57,7 @@ public class DisciplinaService {
 
         Disciplina disciplina = disclipinaBuscada.get();
         
-        if(Objects.isNull(disciplina.getTitular())){
-            return DisciplinaResponse.builder().id(disciplina.getId())
-            .nome(disciplina.getNome()).cargaHoraria(disciplina.getCargaHoraria())
-            .build();
-        }
-
-        ProfessorResponse professorTitular = ProfessorResponse.builder().
-        id(disciplina.getTitular().getId()).nome(disciplina.getTitular().getNome())
-        .titulo(disciplina.getTitular().getTitulo()).sexo(disciplina.getTitular().getSexo()).build();
-        
-        return DisciplinaResponse.builder().id(disciplina.getId())
-        .nome(disciplina.getNome()).cargaHoraria(disciplina.getCargaHoraria())
-        .professorTitular(professorTitular)
-        .build();
+       return mapper.toResponse(disciplina);
     }
 
     @Transactional
@@ -115,6 +105,10 @@ public class DisciplinaService {
         Disciplina disciplina = disciplinaBuscado.get();
 
         Professor professor = professorService.buscaProfessorPorId(idProfessor);
+
+        if(!Objects.isNull(professor.getDisciplina())){
+            throw new InvalidStateException("O Professor só pode ser titular apenas em uma disciplina");
+        }
 
         disciplina.setTitular(professor);
 

@@ -1,7 +1,6 @@
 package br.ada.treinamento.service;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -9,15 +8,16 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.NotFoundException;
 
+import br.ada.treinamento.Mapper.ProfessorMapper;
+import br.ada.treinamento.Mapper.AlunoMapper;
+import br.ada.treinamento.Mapper.DisciplinaMapper;
 import br.ada.treinamento.dto.AlunoResponse;
 import br.ada.treinamento.dto.DisciplinaResponse;
 import br.ada.treinamento.dto.ProfessorRequest;
 import br.ada.treinamento.dto.ProfessorResponse;
 import br.ada.treinamento.entity.Aluno;
-import br.ada.treinamento.entity.Curso;
 import br.ada.treinamento.entity.Disciplina;
 import br.ada.treinamento.entity.Professor;
-import br.ada.treinamento.repository.DisciplinaRepository;
 import br.ada.treinamento.repository.ProfessorRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,11 +27,20 @@ import lombok.extern.slf4j.Slf4j;
 public class ProfessorService {
 
     private ProfessorRepository repository;
-    private DisciplinaRepository disciplinaRepository;
+    private ProfessorMapper mapper;
+    private DisciplinaMapper disciplinaMapper;
+    private AlunoMapper alunoMapper;
     
     @Inject
-    public ProfessorService(ProfessorRepository repository){
+    public ProfessorService(ProfessorRepository repository,
+    ProfessorMapper professorMapper,
+    DisciplinaMapper disciplinaMapper,
+    AlunoMapper alunoMapper
+    ){
         this.repository = repository;
+        this.mapper = professorMapper;
+        this.disciplinaMapper = disciplinaMapper;
+        this.alunoMapper = alunoMapper;
     }
     
     public List<ProfessorResponse> retrieveAll(){
@@ -39,10 +48,7 @@ public class ProfessorService {
         log.info("listando professores");
         List<Professor> professorEntitie = repository.listAll();
 
-        return professorEntitie.stream().map(professor -> ProfessorResponse.builder()
-        .id(professor.getId()).nome(professor.getNome()).titulo(professor.getTitulo()).sexo(professor.getSexo())
-        .build()
-        ).collect(Collectors.toList());
+        return mapper.toResponse(professorEntitie);
         
     }
 
@@ -51,9 +57,7 @@ public class ProfessorService {
         log.info("listando o professor {}", id);
         Professor professor = buscaProfessorPorId(id);
 
-        return ProfessorResponse.builder()
-        .id(professor.getId()).nome(professor.getNome()).titulo(professor.getTitulo()).sexo(professor.getSexo())
-        .build();
+        return mapper.toResponse(professor);
         
 
     }
@@ -62,10 +66,7 @@ public class ProfessorService {
     public void save(@Valid ProfessorRequest professorRequest){
         
         log.info("Cadastrando professor {} ", professorRequest);
-        Professor professor = Professor.builder().nome(professorRequest.getNome())
-        .titulo(professorRequest.getTitulo())
-        .sexo(professorRequest.getSexo())
-        .build();
+        Professor professor = mapper.toEntity(professorRequest);
 
         repository.persist(professor);
 
@@ -94,8 +95,7 @@ public class ProfessorService {
         Professor professor = buscaProfessorPorId(id);
         Disciplina disciplinaEntitie = professor.getDisciplina();
         
-        return DisciplinaResponse.builder().id(disciplinaEntitie.getId())
-        .nome(disciplinaEntitie.getNome()).cargaHoraria(disciplinaEntitie.getCargaHoraria()).build();
+        return disciplinaMapper.toResponse(disciplinaEntitie);
     }
 
     public List<AlunoResponse> listarAlunosTutorados(int idProfessor){
@@ -103,12 +103,7 @@ public class ProfessorService {
 
         List<Aluno> alunosEntities = professor.getAlunos();
 
-        return alunosEntities.stream().map(
-            alu -> 
-              AlunoResponse.builder().id(alu.getId())
-              .nome(alu.getNome()).matricula(alu.getMatricula())
-              .sexo(alu.getSexo()).build()
-        ).collect(Collectors.toList());
+        return alunoMapper.toResponse(alunosEntities);
     }
 
     public Professor buscaProfessorPorId(int id){
@@ -122,5 +117,4 @@ public class ProfessorService {
 
     }
     
-
 }

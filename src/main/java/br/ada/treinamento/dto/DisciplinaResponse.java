@@ -15,6 +15,6 @@ public class DisciplinaResponse {
     private int id;
     private String nome;
     private int cargaHoraria;
-    private ProfessorResponse professorTitular;
+    private String professorTitular;
 
 }
